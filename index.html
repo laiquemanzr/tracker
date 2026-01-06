@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>RevisionFlow | NEET 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary-color: #4b6cb7;
+            --secondary-color: #182848;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f5f7fa;
+            --dark-color: #2c3e50;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease;
+            --card-bg: #ffffff;
+            --input-bg: #f8f9fa;
+            --current-font: 'Lexend', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Font Family Classes */
+        .font-lexend {
+            font-family: 'Lexend', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .font-patrick-hand {
+            font-family: 'Patrick Hand', cursive, sans-serif;
+        }
+        
+        .font-source-sans {
+            font-family: 'Source Sans Pro', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .font-tech-mono {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        body {
+            font-family: var(--current-font);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 12px;
+            transition: var(--transition);
+            font-size: 15px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Theme colors */
+        body.theme-light-blue {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --primary-color: #4b6cb7;
+            --secondary-color: #182848;
+        }
+        
+        body.theme-light-green {
+            background: linear-gradient(135deg, #f0f9f0 0%, #e0f0e0 100%);
+            --primary-color: #43a047;
+            --secondary-color: #1b5e20;
+        }
+        
+        body.theme-light-pink {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            --primary-color: #d81b60;
+            --secondary-color: #880e4f;
+        }
+        
+        body.theme-light-purple {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            --primary-color: #8e24aa;
+            --secondary-color: #4a148c;
+        }
+        
+        body.theme-light-orange {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            --primary-color: #f57c00;
+            --secondary-color: #e65100;
+        }
+        
+        body.theme-black-white {
+            background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+            --primary-color: #333333;
+            --secondary-color: #000000;
+            --success-color: #4a4a4a;
+            --warning-color: #666666;
+            --danger-color: #222222;
+            --light-color: #f5f5f5;
+            --dark-color: #111111;
+            color: #222;
+        }
+        
+        /* Header - Mobile Optimized */
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 16px;
+            background: var(--card-bg);
+            color: var(--dark-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        
+        .app-subtitle {
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .control-btn {
+            background: var(--input-bg);
+            color: var(--dark-color);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        
+        .control-btn:hover {
+            background: #e9ecef;
+            transform: scale(1.05);
+        }
+        
+        .control-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .date-countdown-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .current-date {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 6px;
+        }
+        
+        .neet-countdown {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: fit-content;
+        }
+        
+        /* Dropdowns */
+        .dropdown-container {
+            position: relative;
+        }
+        
+        .dropdown {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 1000;
+            min-width: 180px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            color: var(--dark-color);
+        }
+        
+        .dropdown-item:hover {
+            background: var(--input-bg);
+        }
+        
+        .dropdown-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .dropdown-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        /* Statistics Section - Mobile Grid */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        /* Main Layout - Mobile First */
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 18px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .card h2 {
+            color: var(--dark-color);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .card h2 i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        
+        /* Subject Tabs - Scrollable on Mobile */
+        .subject-tabs-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .subject-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .subject-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .subject-tabs::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .subject-tabs::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        .subject-tab {
+            padding: 8px 16px;
+            background: var(--input-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            font-size: 0.85rem;
+            color: var(--dark-color);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .subject-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .subject-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Chapters Grid */
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .chapter-item {
+            background: var(--input-bg);
+            border-left: 4px solid #adb5bd;
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .chapter-item:hover {
+            background: #e9ecef;
+        }
+        
+        .chapter-item.completed {
+            border-left-color: var(--success-color);
+            background: #e8f5e9;
+        }
+        
+        .chapter-item.user-added {
+            border-left-color: var(--primary-color);
+        }
+        
+        .chapter-info {
+            flex-grow: 1;
+            min-width: 0;
+            margin-bottom: 12px;
+        }
+        
+        .chapter-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+            line-height: 1.4;
+        }
+        
+        .chapter-meta {
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .chapter-subject {
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .chapter-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .complete-btn, .undo-btn, .delete-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            flex: 1;
+            min-height: 38px;
+        }
+        
+        .complete-btn {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .complete-btn:hover {
+            background: #27ae60;
+        }
+        
+        .undo-btn {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .undo-btn:hover {
+            background: #d68910;
+        }
+        
+        .delete-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+        
+        .user-added-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        /* New Chapter Section */
+        .new-chapter-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .new-chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .new-chapter-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .new-chapter-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        /* Form Elements */
+        .form-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            background: white;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            font-family: inherit;
+            width: 100%;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        /* Today's revisions, Backlog, Upcoming */
+        .today-revision-list, .backlog-list, .upcoming-revisions-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .revision-item {
+            background: var(--input-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .revision-item.missed {
+            border-left-color: var(--danger-color);
+        }
+        
+        .revision-item.completed {
+            border-left-color: var(--success-color);
+            opacity: 0.8;
+        }
+        
+        .revision-content {
+            flex: 1;
+        }
+        
+        .revision-chapter-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        
+        .revision-meta {
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .complete-revision-btn {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .complete-revision-btn:hover {
+            background: #27ae60;
+        }
+        
+        .missed-revision-btn {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .missed-revision-btn:hover {
+            background: #d68910;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #888;
+        }
+        
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
+        .empty-state p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        /* Modal Styles - Mobile Optimized */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            padding: 15px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-content {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Warning Dialog */
+        .warning-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            padding: 15px;
+        }
+        
+        .warning-dialog.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .warning-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        
+        .warning-dialog.active .warning-content {
+            transform: translateY(0);
+        }
+        
+        .warning-icon {
+            font-size: 2.5rem;
+            color: var(--warning-color);
+            margin-bottom: 15px;
+        }
+        
+        .warning-text {
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--dark-color);
+        }
+        
+        .warning-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .warning-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.9rem;
+            flex: 1;
+            max-width: 120px;
+        }
+        
+        .warning-btn.cancel {
+            background: var(--input-bg);
+            color: var(--dark-color);
+        }
+        
+        .warning-btn.cancel:hover {
+            background: #e9ecef;
+        }
+        
+        .warning-btn.confirm {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .warning-btn.confirm:hover {
+            background: #c0392b;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            left: 15px;
+            background: var(--success-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            animation: slideInTop 0.3s ease;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .notification.warning {
+            background: var(--warning-color);
+        }
+        
+        .notification.error {
+            background: var(--danger-color);
+        }
+        
+        @keyframes slideInTop {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutTop {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Tablet Styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 18px 25px;
+            }
+            
+            .header-top {
+                width: auto;
+            }
+            
+            .date-countdown-section {
+                border-top: none;
+                padding-top: 0;
+                border-left: 1px solid rgba(0, 0, 0, 0.05);
+                padding-left: 20px;
+                align-items: flex-start;
+            }
+            
+            .stats-section {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .main-layout {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            
+            .new-chapter-content {
+                grid-template-columns: repeat(2, 1fr);
+                display: grid;
+            }
+            
+            .revision-item {
+                flex-direction: row;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                min-width: 120px;
+            }
+            
+            .chapters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .chapter-item {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .chapter-info {
+                margin-bottom: 0;
+                margin-right: 15px;
+            }
+            
+            .chapter-actions {
+                flex-direction: column;
+                min-width: 130px;
+            }
+            
+            .notification {
+                left: auto;
+                right: 15px;
+                max-width: 350px;
+            }
+        }
+        
+        /* Desktop Styles */
+        @media (min-width: 1024px) {
+            .container {
+                padding: 0;
+            }
+            
+            .chapters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+            
+            .main-layout {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .revision-item {
+                gap: 20px;
+            }
+        }
+        
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            .chapters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            }
+        }
+        
+        /* Utility Classes */
+        .mb-10 { margin-bottom: 10px; }
+        .mb-15 { margin-bottom: 15px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-15 { margin-top: 15px; }
+        .mt-20 { margin-top: 20px; }
+        
+        /* Touch-friendly adjustments */
+        @media (hover: none) and (pointer: coarse) {
+            .control-btn:hover,
+            .subject-tab:hover,
+            .chapter-item:hover,
+            .btn:hover,
+            .action-btn:hover,
+            .complete-btn:hover,
+            .undo-btn:hover,
+            .delete-btn:hover {
+                transform: none;
+            }
+            
+            .control-btn:active,
+            .subject-tab:active,
+            .chapter-item:active,
+            .btn:active,
+            .action-btn:active,
+            .complete-btn:active,
+            .undo-btn:active,
+            .delete-btn:active {
+                opacity: 0.8;
+            }
+        }
+    </style>
+    
+    <!-- Load Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Patrick+Hand&family=Share+Tech+Mono&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="theme-light-blue font-lexend">
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-stream"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>RevisionFlow</h1>
+                        <div class="app-subtitle">NEET 2026 Revision Tracker</div>
+                    </div>
+                </div>
+                
+                <div class="header-controls">
+                    <div class="dropdown-container">
+                        <button class="control-btn" id="font-toggle" aria-label="Change font">
+                            <i class="fas fa-font"></i>
+                        </button>
+                        <div class="dropdown" id="font-dropdown">
+                            <div class="dropdown-item font-lexend active" data-font="lexend">
+                                <i class="fas fa-check"></i>
+                                <span>Lexend</span>
+                            </div>
+                            <div class="dropdown-item font-patrick-hand" data-font="patrick-hand">
+                                <i class="fas fa-check"></i>
+                                <span>Patrick Hand</span>
+                            </div>
+                            <div class="dropdown-item font-source-sans" data-font="source-sans">
+                                <i class="fas fa-check"></i>
+                                <span>Source Sans</span>
+                            </div>
+                            <div class="dropdown-item font-tech-mono" data-font="tech-mono">
+                                <i class="fas fa-check"></i>
+                                <span>Tech Mono</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-container">
+                        <button class="control-btn" id="theme-toggle" aria-label="Change theme">
+                            <i class="fas fa-palette"></i>
+                        </button>
+                        <div class="dropdown" id="theme-dropdown">
+                            <div class="dropdown-item theme-light-blue active" data-theme="light-blue">
+                                <div class="dropdown-color" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);"></div>
+                                <span>Light Blue</span>
+                            </div>
+                            <div class="dropdown-item theme-light-green" data-theme="light-green">
+                                <div class="dropdown-color" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);"></div>
+                                <span>Light Green</span>
+                            </div>
+                            <div class="dropdown-item theme-light-pink" data-theme="light-pink">
+                                <div class="dropdown-color" style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);"></div>
+                                <span>Light Pink</span>
+                            </div>
+                            <div class="dropdown-item theme-light-purple" data-theme="light-purple">
+                                <div class="dropdown-color" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);"></div>
+                                <span>Light Purple</span>
+                            </div>
+                            <div class="dropdown-item theme-light-orange" data-theme="light-orange">
+                                <div class="dropdown-color" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);"></div>
+                                <span>Light Orange</span>
+                            </div>
+                            <div class="dropdown-item theme-black-white" data-theme="black-white">
+                                <div class="dropdown-color" style="background: linear-gradient(135deg, #f8f8f8 0%, #e0e0e0 100%); border: 1px solid #aaa;"></div>
+                                <span>Black & White</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="control-btn" id="settings-toggle" aria-label="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    
+                    <button class="control-btn" id="fullscreen-toggle" aria-label="Toggle fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="date-countdown-section">
+                <div class="current-date" id="current-date">Loading date...</div>
+                <div class="neet-countdown">
+                    <i class="fas fa-clock"></i>
+                    <span id="neet-countdown">Calculating...</span> days left
+                </div>
+            </div>
+        </header>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-label">Today's Revisions</div>
+                <div class="stat-value" id="today-count">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Backlog Revisions</div>
+                <div class="stat-value" id="backlog-count">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Chapters</div>
+                <div class="stat-value" id="total-chapters">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completed Chapters</div>
+                <div class="stat-value" id="completed-chapters">0</div>
+            </div>
+        </div>
+        
+        <div class="main-layout">
+            <div class="card">
+                <h2><i class="fas fa-calendar-day"></i> Today's Revisions</h2>
+                <div class="today-revision-list" id="today-revisions">
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No revisions scheduled for today!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-tasks"></i> Backlog (Missed Revisions)</h2>
+                <div class="backlog-list" id="backlog-revisions">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-check"></i>
+                        <p>No missed revisions! Great job!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-calendar-alt"></i> Upcoming Revisions</h2>
+                <div class="upcoming-revisions-list" id="upcoming-revisions">
+                    <div class="empty-state">
+                        <i class="fas fa-calendar"></i>
+                        <p>No upcoming revisions!</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-15" id="view-all-revisions" style="width: 100%;">
+                    <i class="fas fa-list"></i> View All Revision Dates
+                </button>
+            </div>
+        </div>
+        
+        <!-- New Chapter Section -->
+        <div class="new-chapter-section">
+            <div class="new-chapter-header">
+                <i class="fas fa-plus-circle" style="color: var(--primary-color); font-size: 1.3rem;"></i>
+                <div class="new-chapter-title">Add New Chapter</div>
+            </div>
+            
+            <div class="new-chapter-content">
+                <div class="input-group">
+                    <label for="new-chapter-name-input">Chapter Name</label>
+                    <input type="text" id="new-chapter-name-input" class="form-input" placeholder="Enter chapter name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="new-chapter-subject-select">Subject</label>
+                    <select id="new-chapter-subject-select" class="form-input">
+                        <!-- Subject options will be loaded here -->
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="cancel-new-chapter">Cancel</button>
+                <button class="btn btn-primary" id="add-new-chapter-btn">
+                    <i class="fas fa-plus"></i> Add Chapter
+                </button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-graduation-cap"></i> Chapters</h2>
+            
+            <div class="subject-tabs-container">
+                <div class="subject-tabs" id="subject-tabs">
+                    <!-- Subject tabs will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="chapters-grid" id="chapters-container">
+                <!-- Chapters will be loaded here -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>RevisionFlow for NEET 2026 &copy; 2023 | Your data is stored locally in your browser.</p>
+        </footer>
+    </div>
+
+    <!-- Modal for date-wise revision plan -->
+    <div class="modal-overlay" id="revision-plan-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-week"></i> Revision Plan</h3>
+                <button class="close-modal" id="close-modal" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-content" id="modal-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal for Revision Plan Customization -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Revision Plan Settings</h3>
+                <button class="close-modal" id="close-settings-modal" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="mb-15">
+                    <p><strong>Customize your revision plan:</strong> Set how many times you want to revise each chapter and the intervals between revisions.</p>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label for="revision-count" style="display: block; margin-bottom: 8px; font-weight: 500;">Number of Revisions:</label>
+                        <select id="revision-count" class="form-input">
+                            <option value="2">2 Revisions</option>
+                            <option value="3">3 Revisions</option>
+                            <option value="4">4 Revisions</option>
+                            <option value="5" selected>5 Revisions</option>
+                            <option value="6">6 Revisions</option>
+                            <option value="7">7 Revisions</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="plan-preset" style="display: block; margin-bottom: 8px; font-weight: 500;">Quick Preset:</label>
+                        <select id="plan-preset" class="form-input">
+                            <option value="custom">Custom Intervals</option>
+                            <option value="default">Default (1, 4, 7, 14, 28 days)</option>
+                            <option value="intensive">Intensive (1, 3, 7, 15, 30, 60 days)</option>
+                            <option value="spaced">Spaced (1, 7, 30, 90 days)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="intervals-container" style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; font-size: 1rem;">Revision Intervals (in days after completion):</h4>
+                    <div id="intervals-list">
+                        <!-- Interval inputs will be added here -->
+                    </div>
+                    
+                    <button class="btn btn-secondary mt-10" id="add-interval">
+                        <i class="fas fa-plus"></i> Add Another Revision
+                    </button>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn btn-secondary" id="reset-plan">
+                        <i class="fas fa-undo"></i> Reset to Default
+                    </button>
+                    <button class="btn btn-primary" id="save-plan">
+                        <i class="fas fa-save"></i> Save Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning dialog for delete chapter -->
+    <div class="warning-dialog" id="delete-warning-dialog">
+        <div class="warning-content">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="warning-text" id="warning-text">
+                Are you sure you want to delete this chapter? This action cannot be undone.
+            </div>
+            <div class="warning-actions">
+                <button class="warning-btn cancel" id="cancel-delete">Cancel</button>
+                <button class="warning-btn confirm" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date
+            updateCurrentDate();
+            
+            // Initialize NEET countdown
+            updateNEETCountdown();
+            
+            // Load data from localStorage
+            loadData();
+            
+            // Set up font toggle
+            document.getElementById('font-toggle').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = document.getElementById('font-dropdown');
+                dropdown.classList.toggle('show');
+            });
+            
+            // Set up font selection
+            document.querySelectorAll('#font-dropdown .dropdown-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const font = this.dataset.font;
+                    changeFont(font);
+                    document.getElementById('font-dropdown').classList.remove('show');
+                });
+            });
+            
+            // Set up theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = document.getElementById('theme-dropdown');
+                dropdown.classList.toggle('show');
+            });
+            
+            // Set up theme selection
+            document.querySelectorAll('#theme-dropdown .dropdown-item').forEach(option => {
+                option.addEventListener('click', function() {
+                    const theme = this.dataset.theme;
+                    changeTheme(theme);
+                    document.getElementById('theme-dropdown').classList.remove('show');
+                });
+            });
+            
+            // Set up settings toggle
+            document.getElementById('settings-toggle').addEventListener('click', openSettingsModal);
+            
+            // Set up fullscreen toggle
+            document.getElementById('fullscreen-toggle').addEventListener('click', toggleFullscreen);
+            
+            // Set up view all revisions button
+            document.getElementById('view-all-revisions').addEventListener('click', showAllRevisionDates);
+            
+            // Set up modal close buttons
+            document.getElementById('close-modal').addEventListener('click', closeRevisionPlanModal);
+            document.getElementById('close-settings-modal').addEventListener('click', closeSettingsModal);
+            
+            // Set up warning dialog buttons
+            document.getElementById('cancel-delete').addEventListener('click', cancelDelete);
+            document.getElementById('confirm-delete').addEventListener('click', confirmDelete);
+            
+            // Set up chapter management
+            document.getElementById('add-new-chapter-btn').addEventListener('click', addCustomChapter);
+            document.getElementById('cancel-new-chapter').addEventListener('click', resetChapterForm);
+            
+            // Set up revision plan controls
+            document.getElementById('revision-count').addEventListener('change', updateIntervalInputs);
+            document.getElementById('plan-preset').addEventListener('change', applyPlanPreset);
+            document.getElementById('add-interval').addEventListener('click', addIntervalInput);
+            document.getElementById('reset-plan').addEventListener('click', resetToDefaultPlan);
+            document.getElementById('save-plan').addEventListener('click', saveCustomPlan);
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown-container')) {
+                    document.querySelectorAll('.dropdown').forEach(dropdown => {
+                        dropdown.classList.remove('show');
+                    });
+                }
+            });
+            
+            // Close modals when clicking outside
+            document.getElementById('revision-plan-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeRevisionPlanModal();
+                }
+            });
+            
+            document.getElementById('settings-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeSettingsModal();
+                }
+            });
+            
+            // Close warning dialogs when clicking outside
+            document.getElementById('delete-warning-dialog').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cancelDelete();
+                }
+            });
+            
+            // Initialize the interval inputs
+            initializeIntervalInputs();
+            
+            // Update the display
+            updateDisplay();
+            
+            // Update NEET countdown every minute
+            setInterval(updateNEETCountdown, 60000);
+            
+            // Load saved settings on page load
+            const savedTheme = localStorage.getItem('revisionFlowTheme') || 'light-blue';
+            changeTheme(savedTheme);
+            
+            const savedFont = localStorage.getItem('revisionFlowFont') || 'lexend';
+            changeFont(savedFont);
+            
+            // Handle back button to close modals
+            window.addEventListener('popstate', function() {
+                closeAllModals();
+            });
+            
+            // Handle keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeAllModals();
+                    document.querySelectorAll('.dropdown').forEach(dropdown => {
+                        dropdown.classList.remove('show');
+                    });
+                }
+            });
+        });
+        
+        // Data structure to store chapters and revisions
+        let revisionData = {
+            chapters: [],
+            revisions: [],
+            missedRevisions: [],
+            subjects: ['biology', 'chemistry', 'physics']
+        };
+        
+        // Default revision plan (1, 4, 7, 14, 28 days)
+        const DEFAULT_REVISION_PLAN = [1, 4, 7, 14, 28];
+        
+        // Current revision plan (can be customized)
+        let currentRevisionPlan = [...DEFAULT_REVISION_PLAN];
+        
+        // Variables for delete operation
+        let chapterToDelete = null;
+        
+        // Predefined NCERT chapters in proper sequence
+        const ncertChapters = [
+            // Biology Class 11 (19 chapters)
+            { id: 101, name: "The Living World", subject: "biology", class: "11", order: 1, custom: false },
+            { id: 102, name: "Biological Classification", subject: "biology", class: "11", order: 2, custom: false },
+            { id: 103, name: "Plant Kingdom", subject: "biology", class: "11", order: 3, custom: false },
+            { id: 104, name: "Animal Kingdom", subject: "biology", class: "11", order: 4, custom: false },
+            { id: 105, name: "Morphology of Flowering Plants", subject: "biology", class: "11", order: 5, custom: false },
+            { id: 106, name: "Anatomy of Flowering Plants", subject: "biology", class: "11", order: 6, custom: false },
+            { id: 107, name: "Structural Organization in Animals", subject: "biology", class: "11", order: 7, custom: false },
+            { id: 108, name: "Cell: The Unit of Life", subject: "biology", class: "11", order: 8, custom: false },
+            { id: 109, name: "Biomolecules", subject: "biology", class: "11", order: 9, custom: false },
+            { id: 110, name: "Cell Cycle and Cell Division", subject: "biology", class: "11", order: 10, custom: false },
+            { id: 111, name: "Photosynthesis in Higher Plants", subject: "biology", class: "11", order: 11, custom: false },
+            { id: 112, name: "Respiration in Plants", subject: "biology", class: "11", order: 12, custom: false },
+            { id: 113, name: "Plant Growth and Development", subject: "biology", class: "11", order: 13, custom: false },
+            { id: 114, name: "Breathing and Exchange of Gases", subject: "biology", class: "11", order: 14, custom: false },
+            { id: 115, name: "Body Fluids and Circulation", subject: "biology", class: "11", order: 15, custom: false },
+            { id: 116, name: "Excretory Products and Their Elimination", subject: "biology", class: "11", order: 16, custom: false },
+            { id: 117, name: "Locomotion and Movement", subject: "biology", class: "11", order: 17, custom: false },
+            { id: 118, name: "Neural Control and Coordination", subject: "biology", class: "11", order: 18, custom: false },
+            { id: 119, name: "Chemical Coordination and Integration", subject: "biology", class: "11", order: 19, custom: false },
+            
+            // Biology Class 12 (13 chapters)
+            { id: 120, name: "Sexual Reproduction in Flowering Plants", subject: "biology", class: "12", order: 1, custom: false },
+            { id: 121, name: "Human Reproduction", subject: "biology", class: "12", order: 2, custom: false },
+            { id: 122, name: "Reproductive Health", subject: "biology", class: "12", order: 3, custom: false },
+            { id: 123, name: "Principles of Inheritance and Variation", subject: "biology", class: "12", order: 4, custom: false },
+            { id: 124, name: "Molecular Basis of Inheritance", subject: "biology", class: "12", order: 5, custom: false },
+            { id: 125, name: "Evolution", subject: "biology", class: "12", order: 6, custom: false },
+            { id: 126, name: "Human Health and Disease", subject: "biology", class: "12", order: 7, custom: false },
+            { id: 127, name: "Microbes in Human Welfare", subject: "biology", class: "12", order: 8, custom: false },
+            { id: 128, name: "Biotechnology: Principles and Processes", subject: "biology", class: "12", order: 9, custom: false },
+            { id: 129, name: "Biotechnology and its Applications", subject: "biology", class: "12", order: 10, custom: false },
+            { id: 130, name: "Organisms and Populations", subject: "biology", class: "12", order: 11, custom: false },
+            { id: 131, name: "Ecosystem", subject: "biology", class: "12", order: 12, custom: false },
+            { id: 132, name: "Biodiversity and Conservation", subject: "biology", class: "12", order: 13, custom: false },
+            
+            // Chemistry Class 11 (9 chapters)
+            { id: 201, name: "Some Basic Concepts of Chemistry", subject: "chemistry", class: "11", order: 1, custom: false },
+            { id: 202, name: "Structure of Atom", subject: "chemistry", class: "11", order: 2, custom: false },
+            { id: 203, name: "Classification of Elements and Periodicity in Properties", subject: "chemistry", class: "11", order: 3, custom: false },
+            { id: 204, name: "Chemical Bonding and Molecular Structure", subject: "chemistry", class: "11", order: 4, custom: false },
+            { id: 205, name: "Chemical Thermodynamics", subject: "chemistry", class: "11", order: 5, custom: false },
+            { id: 206, name: "Equilibrium", subject: "chemistry", class: "11", order: 6, custom: false },
+            { id: 207, name: "Redox Reactions", subject: "chemistry", class: "11", order: 7, custom: false },
+            { id: 208, name: "Organic Chemistry: Some Basic Principles and Techniques", subject: "chemistry", class: "11", order: 8, custom: false },
+            { id: 209, name: "Hydrocarbons", subject: "chemistry", class: "11", order: 9, custom: false },
+            
+            // Chemistry Class 12 (11 chapters)
+            { id: 210, name: "Solutions", subject: "chemistry", class: "12", order: 1, custom: false },
+            { id: 211, name: "Electrochemistry", subject: "chemistry", class: "12", order: 2, custom: false },
+            { id: 212, name: "Chemical Kinetics", subject: "chemistry", class: "12", order: 3, custom: false },
+            { id: 213, name: "The p-Block Elements", subject: "chemistry", class: "12", order: 4, custom: false },
+            { id: 214, name: "The d- and f-Block Elements", subject: "chemistry", class: "12", order: 5, custom: false },
+            { id: 215, name: "Coordination Compounds", subject: "chemistry", class: "12", order: 6, custom: false },
+            { id: 216, name: "Haloalkanes and Haloarenes", subject: "chemistry", class: "12", order: 7, custom: false },
+            { id: 217, name: "Alcohols, Phenols and Ethers", subject: "chemistry", class: "12", order: 8, custom: false },
+            { id: 218, name: "Aldehydes, Ketones and Carboxylic Acids", subject: "chemistry", class: "12", order: 9, custom: false },
+            { id: 219, name: "Amines", subject: "chemistry", class: "12", order: 10, custom: false },
+            { id: 220, name: "Biomolecules", subject: "chemistry", class: "12", order: 11, custom: false },
+            
+            // Physics Class 11 (14 chapters)
+            { id: 301, name: "Units and Measurements", subject: "physics", class: "11", order: 1, custom: false },
+            { id: 302, name: "Motion in a Straight Line", subject: "physics", class: "11", order: 2, custom: false },
+            { id: 303, name: "Motion in a Plane", subject: "physics", class: "11", order: 3, custom: false },
+            { id: 304, name: "Laws of Motion", subject: "physics", class: "11", order: 4, custom: false },
+            { id: 305, name: "Work, Energy and Power", subject: "physics", class: "11", order: 5, custom: false },
+            { id: 306, name: "System of Particles and Rotational Motion", subject: "physics", class: "11", order: 6, custom: false },
+            { id: 307, name: "Gravitation", subject: "physics", class: "11", order: 7, custom: false },
+            { id: 308, name: "Mechanical Properties of Solids", subject: "physics", class: "11", order: 8, custom: false },
+            { id: 309, name: "Mechanical Properties of Fluids", subject: "physics", class: "11", order: 9, custom: false },
+            { id: 310, name: "Thermal Properties of Matter", subject: "physics", class: "11", order: 10, custom: false },
+            { id: 311, name: "Thermodynamics", subject: "physics", class: "11", order: 11, custom: false },
+            { id: 312, name: "Kinetic Theory of Gases", subject: "physics", class: "11", order: 12, custom: false },
+            { id: 313, name: "Oscillations", subject: "physics", class: "11", order: 13, custom: false },
+            { id: 314, name: "Waves", subject: "physics", class: "11", order: 14, custom: false },
+            
+            // Physics Class 12 (14 chapters)
+            { id: 315, name: "Electric Charges and Fields", subject: "physics", class: "12", order: 1, custom: false },
+            { id: 316, name: "Electrostatic Potential and Capacitance", subject: "physics", class: "12", order: 2, custom: false },
+            { id: 317, name: "Current Electricity", subject: "physics", class: "12", order: 3, custom: false },
+            { id: 318, name: "Moving Charges and Magnetism", subject: "physics", class: "12", order: 4, custom: false },
+            { id: 319, name: "Magnetism and Matter", subject: "physics", class: "12", order: 5, custom: false },
+            { id: 320, name: "Electromagnetic Induction", subject: "physics", class: "12", order: 6, custom: false },
+            { id: 321, name: "Alternating Current", subject: "physics", class: "12", order: 7, custom: false },
+            { id: 322, name: "Electromagnetic Waves", subject: "physics", class: "12", order: 8, custom: false },
+            { id: 323, name: "Ray Optics and Optical Instruments", subject: "physics", class: "12", order: 9, custom: false },
+            { id: 324, name: "Wave Optics", subject: "physics", class: "12", order: 10, custom: false },
+            { id: 325, name: "Dual Nature of Radiation and Matter", subject: "physics", class: "12", order: 11, custom: false },
+            { id: 326, name: "Atoms", subject: "physics", class: "12", order: 12, custom: false },
+            { id: 327, name: "Nuclei", subject: "physics", class: "12", order: 13, custom: false },
+            { id: 328, name: "Semiconductor Electronics: Materials, Devices and Simple Circuits", subject: "physics", class: "12", order: 14, custom: false }
+        ];
+        
+        // Update current date display
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            document.getElementById('current-date').textContent = dateString;
+        }
+        
+        // Update NEET countdown
+        function updateNEETCountdown() {
+            const neetDate = new Date('May 3, 2026 00:00:00');
+            const today = new Date();
+            
+            // Calculate difference in days
+            const diffTime = neetDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Update display
+            const countdownElement = document.getElementById('neet-countdown');
+            if (diffDays > 0) {
+                countdownElement.textContent = diffDays;
+                countdownElement.style.color = diffDays < 100 ? '#ff6b6b' : '#ffffff';
+            } else if (diffDays === 0) {
+                countdownElement.textContent = "Today!";
+                countdownElement.style.color = '#ff0000';
+            } else {
+                countdownElement.textContent = "NEET has passed";
+                countdownElement.style.color = '#999';
+            }
+        }
+        
+        // Format date as YYYY-MM-DD for easier comparison
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        // Format date for display (e.g., Jan 10, 2023)
+        function formatDateDisplay(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        
+        // Get today's date in formatted string
+        function getToday() {
+            return formatDate(new Date());
+        }
+        
+        // Get subject display name
+        function getSubjectDisplayName(subjectKey) {
+            const subjectNames = {
+                'biology': 'Biology',
+                'chemistry': 'Chemistry', 
+                'physics': 'Physics'
+            };
+            
+            return subjectNames[subjectKey] || subjectKey.charAt(0).toUpperCase() + subjectKey.slice(1);
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('revisionFlowData');
+            
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                revisionData = parsedData;
+                
+                // Ensure subjects array exists
+                if (!revisionData.subjects) {
+                    revisionData.subjects = ['biology', 'chemistry', 'physics'];
+                }
+            } else {
+                // Initialize with all NCERT chapters as active (not completed)
+                revisionData.chapters = ncertChapters.map(chapter => ({
+                    ...chapter,
+                    addedDate: getToday(),
+                    isCompleted: false,
+                    completedDate: null
+                }));
+                
+                // Initialize with some sample completed chapters for demo
+                initializeSampleData();
+            }
+            
+            // Load custom revision plan if available
+            const savedPlan = localStorage.getItem('revisionFlowPlan');
+            if (savedPlan) {
+                currentRevisionPlan = JSON.parse(savedPlan);
+            }
+            
+            // Check for missed revisions based on past dates
+            checkForMissedRevisions();
+        }
+        
+        // Initialize with some sample data for demo
+        function initializeSampleData() {
+            // Mark first 5 chapters as completed for demo
+            const sampleChapters = [101, 102, 201, 202, 301];
+            
+            sampleChapters.forEach(chapterId => {
+                const chapterIndex = revisionData.chapters.findIndex(ch => ch.id === chapterId);
+                if (chapterIndex !== -1) {
+                    revisionData.chapters[chapterIndex].isCompleted = true;
+                    revisionData.chapters[chapterIndex].completedDate = getToday();
+                    
+                    // Schedule revisions
+                    scheduleRevisionsForChapter(revisionData.chapters[chapterIndex]);
+                }
+            });
+            
+            saveData();
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('revisionFlowData', JSON.stringify(revisionData));
+        }
+        
+        // Change font
+        function changeFont(font) {
+            // Remove all font classes
+            document.body.classList.remove('font-lexend', 'font-patrick-hand', 'font-source-sans', 'font-tech-mono');
+            
+            // Add selected font class
+            document.body.classList.add(`font-${font}`);
+            
+            // Update active item in dropdown
+            document.querySelectorAll('#font-dropdown .dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`#font-dropdown .dropdown-item[data-font="${font}"]`).classList.add('active');
+            
+            // Save font preference
+            localStorage.setItem('revisionFlowFont', font);
+            
+            showNotification(`Font changed to ${font}`, 'success');
+        }
+        
+        // Change theme
+        function changeTheme(theme) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-light-blue', 'theme-light-green', 'theme-light-pink', 'theme-light-purple', 'theme-light-orange', 'theme-black-white');
+            
+            // Add selected theme class
+            document.body.classList.add(`theme-${theme}`);
+            
+            // Update active item in dropdown
+            document.querySelectorAll('#theme-dropdown .dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`#theme-dropdown .dropdown-item[data-theme="${theme}"]`).classList.add('active');
+            
+            // Save theme preference
+            localStorage.setItem('revisionFlowTheme', theme);
+            
+            showNotification(`Theme changed to ${theme.replace('-', ' ')}`, 'success');
+        }
+        
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+                document.getElementById('fullscreen-toggle').innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreen-toggle').innerHTML = '<i class="fas fa-expand"></i>';
+                }
+            }
+        }
+        
+        // Mark a chapter as completed
+        function markChapterAsCompleted(chapterId) {
+            const chapterIndex = revisionData.chapters.findIndex(ch => ch.id === chapterId);
+            
+            if (chapterIndex !== -1) {
+                const chapter = revisionData.chapters[chapterIndex];
+                
+                if (chapter.isCompleted) {
+                    // If already completed, ask if user wants to reschedule revisions
+                    if (confirm('This chapter is already marked as finished. Do you want to reschedule revisions from today?')) {
+                        // Remove existing revisions for this chapter
+                        revisionData.revisions = revisionData.revisions.filter(rev => rev.chapterId !== chapterId);
+                        
+                        // Schedule new revisions
+                        scheduleRevisionsForChapter(chapter);
+                        
+                        // Update completed date
+                        chapter.completedDate = getToday();
+                        
+                        saveData();
+                        updateDisplay();
+                        
+                        showNotification(`Revisions for "${chapter.name}" rescheduled from today!`, 'success');
+                    }
+                    return;
+                }
+                
+                // Mark chapter as completed
+                chapter.isCompleted = true;
+                chapter.completedDate = getToday();
+                
+                // Schedule revisions
+                scheduleRevisionsForChapter(chapter);
+                
+                saveData();
+                updateDisplay();
+                
+                showNotification(`Chapter "${chapter.name}" marked as finished! ${currentRevisionPlan.length} revisions scheduled.`, 'success');
+            }
+        }
+        
+        // Schedule revisions for a chapter using current plan
+        function scheduleRevisionsForChapter(chapter) {
+            const today = new Date();
+            
+            currentRevisionPlan.forEach((interval, index) => {
+                const revisionDate = new Date(today);
+                revisionDate.setDate(revisionDate.getDate() + interval);
+                
+                const revision = {
+                    id: Date.now() + Math.random(),
+                    chapterId: chapter.id,
+                    chapterName: chapter.name,
+                    chapterSubject: chapter.subject,
+                    revisionNumber: index + 1,
+                    scheduledDate: formatDate(revisionDate),
+                    isCompleted: false,
+                    completedDate: null,
+                    isMissed: false
+                };
+                
+                revisionData.revisions.push(revision);
+            });
+        }
+        
+        // Mark a revision as completed
+        function markRevisionAsCompleted(revisionId) {
+            const revisionIndex = revisionData.revisions.findIndex(rev => rev.id === revisionId);
+            
+            if (revisionIndex !== -1) {
+                revisionData.revisions[revisionIndex].isCompleted = true;
+                revisionData.revisions[revisionIndex].completedDate = getToday();
+                
+                // Remove from missed revisions if it's there
+                const missedIndex = revisionData.missedRevisions.findIndex(rev => rev.revisionId === revisionId);
+                if (missedIndex !== -1) {
+                    revisionData.missedRevisions.splice(missedIndex, 1);
+                }
+                
+                saveData();
+                updateDisplay();
+                
+                // Show success message
+                const chapterName = revisionData.revisions[revisionIndex].chapterName;
+                const revisionNum = revisionData.revisions[revisionIndex].revisionNumber;
+                showNotification(`Revision R${revisionNum} of "${chapterName}" marked as finished!`, 'success');
+            }
+        }
+        
+        // Mark a revision as missed
+        function markRevisionAsMissed(revisionId) {
+            const revisionIndex = revisionData.revisions.findIndex(rev => rev.id === revisionId);
+            
+            if (revisionIndex !== -1) {
+                const revision = revisionData.revisions[revisionIndex];
+                revision.isMissed = true;
+                
+                // Add to missed revisions with today's date
+                const missedRevision = {
+                    revisionId: revision.id,
+                    chapterId: revision.chapterId,
+                    chapterName: revision.chapterName,
+                    chapterSubject: revision.chapterSubject,
+                    revisionNumber: revision.revisionNumber,
+                    missedDate: getToday(),
+                    lastRevisionDate: revision.completedDate || "Never revised"
+                };
+                
+                // Check if already in missed revisions
+                const existingIndex = revisionData.missedRevisions.findIndex(rev => rev.revisionId === revisionId);
+                if (existingIndex === -1) {
+                    revisionData.missedRevisions.push(missedRevision);
+                }
+                
+                saveData();
+                updateDisplay();
+                
+                // Show notification
+                showNotification(`Revision R${revision.revisionNumber} of "${revision.chapterName}" marked as missed. Added to backlog.`, 'warning');
+            }
+        }
+        
+        // Show warning dialog for deleting chapter
+        function showDeleteWarning(chapterId) {
+            const chapter = revisionData.chapters.find(ch => ch.id === chapterId);
+            if (!chapter) return;
+            
+            document.getElementById('warning-text').textContent = 
+                `Are you sure you want to delete "${chapter.name}"? This action cannot be undone.`;
+            
+            chapterToDelete = chapterId;
+            document.getElementById('delete-warning-dialog').classList.add('active');
+        }
+        
+        // Cancel delete operation
+        function cancelDelete() {
+            chapterToDelete = null;
+            document.getElementById('delete-warning-dialog').classList.remove('active');
+        }
+        
+        // Confirm delete operation
+        function confirmDelete() {
+            if (chapterToDelete) {
+                deleteChapter(chapterToDelete);
+                chapterToDelete = null;
+            }
+            document.getElementById('delete-warning-dialog').classList.remove('active');
+        }
+        
+        // Delete a chapter
+        function deleteChapter(chapterId) {
+            const chapterIndex = revisionData.chapters.findIndex(ch => ch.id === chapterId);
+            
+            if (chapterIndex !== -1) {
+                const chapter = revisionData.chapters[chapterIndex];
+                
+                // Remove the chapter
+                revisionData.chapters.splice(chapterIndex, 1);
+                
+                // Remove all revisions for this chapter
+                revisionData.revisions = revisionData.revisions.filter(rev => rev.chapterId !== chapterId);
+                
+                // Remove from missed revisions
+                revisionData.missedRevisions = revisionData.missedRevisions.filter(rev => rev.chapterId !== chapterId);
+                
+                saveData();
+                updateDisplay();
+                
+                showNotification(`Chapter "${chapter.name}" deleted successfully.`, 'success');
+            }
+        }
+        
+        // Undo chapter completion
+        function undoChapterCompletion(chapterId) {
+            const chapterIndex = revisionData.chapters.findIndex(ch => ch.id === chapterId);
+            
+            if (chapterIndex !== -1) {
+                const chapter = revisionData.chapters[chapterIndex];
+                
+                // Mark chapter as incomplete
+                chapter.isCompleted = false;
+                chapter.completedDate = null;
+                
+                // Remove all revisions for this chapter
+                revisionData.revisions = revisionData.revisions.filter(rev => rev.chapterId !== chapterId);
+                
+                // Remove from missed revisions
+                revisionData.missedRevisions = revisionData.missedRevisions.filter(rev => rev.chapterId !== chapterId);
+                
+                saveData();
+                updateDisplay();
+                
+                showNotification(`Chapter "${chapter.name}" marked as incomplete. All revisions removed.`, 'success');
+            }
+        }
+        
+        // Add a custom chapter
+        function addCustomChapter() {
+            const nameInput = document.getElementById('new-chapter-name-input');
+            const subjectSelect = document.getElementById('new-chapter-subject-select');
+            
+            const name = nameInput.value.trim();
+            const subject = subjectSelect.value;
+            
+            if (!name) {
+                showNotification("Please enter a chapter name.", 'error');
+                return;
+            }
+            
+            if (!subject) {
+                showNotification("Please select a subject.", 'error');
+                return;
+            }
+            
+            // Check if subject exists in subjects array, add if not
+            if (!revisionData.subjects.includes(subject)) {
+                revisionData.subjects.push(subject);
+            }
+            
+            // Generate a unique ID (higher than preloaded chapters)
+            const maxId = Math.max(...revisionData.chapters.map(ch => ch.id), 1000);
+            const newId = maxId + 1;
+            
+            const newChapter = {
+                id: newId,
+                name: name,
+                subject: subject,
+                class: "Custom",
+                order: 1,
+                custom: true,
+                addedDate: getToday(),
+                isCompleted: false,
+                completedDate: null
+            };
+            
+            revisionData.chapters.push(newChapter);
+            
+            // Reset form
+            resetChapterForm();
+            
+            saveData();
+            updateDisplay();
+            
+            // Switch to the subject tab of the added chapter
+            const subjectTab = document.querySelector(`.subject-tab[data-subject="${subject}"]`);
+            if (subjectTab) {
+                document.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'));
+                subjectTab.classList.add('active');
+                filterChaptersBySubject(subject);
+            }
+            
+            showNotification(`Chapter "${name}" added to ${getSubjectDisplayName(subject)}.`, 'success');
+        }
+        
+        // Reset the add chapter form
+        function resetChapterForm() {
+            document.getElementById('new-chapter-name-input').value = '';
+            document.getElementById('new-chapter-subject-select').value = revisionData.subjects[0] || '';
+        }
+        
+        // Update all displays
+        function updateDisplay() {
+            updateSubjectTabs();
+            updateChapterFormSubjects();
+            updateTodayRevisions();
+            updateBacklogRevisions();
+            updateUpcomingRevisions();
+            updateChaptersList();
+            updateStats();
+        }
+        
+        // Update subject tabs
+        function updateSubjectTabs() {
+            const subjectTabsContainer = document.getElementById('subject-tabs');
+            const activeSubject = document.querySelector('.subject-tab.active') ? document.querySelector('.subject-tab.active').dataset.subject : 'all';
+            
+            let html = '<div class="subject-tab active" data-subject="all">All Subjects</div>';
+            
+            revisionData.subjects.forEach(subject => {
+                const isActive = activeSubject === subject;
+                html += `
+                    <div class="subject-tab ${isActive ? 'active' : ''}" data-subject="${subject}">
+                        ${getSubjectDisplayName(subject)}
+                    </div>
+                `;
+            });
+            
+            subjectTabsContainer.innerHTML = html;
+            
+            // Reattach event listeners
+            document.querySelectorAll('.subject-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    document.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter chapters by subject
+                    filterChaptersBySubject(this.dataset.subject);
+                });
+            });
+        }
+        
+        // Update subject options in chapter form
+        function updateChapterFormSubjects() {
+            const subjectSelect = document.getElementById('new-chapter-subject-select');
+            
+            let html = '';
+            revisionData.subjects.forEach(subject => {
+                html += `<option value="${subject}">${getSubjectDisplayName(subject)}</option>`;
+            });
+            
+            subjectSelect.innerHTML = html;
+        }
+        
+        // Update today's revisions display
+        function updateTodayRevisions() {
+            const today = getToday();
+            const todayContainer = document.getElementById('today-revisions');
+            
+            // Filter revisions scheduled for today that are not completed
+            const todayRevisions = revisionData.revisions.filter(rev => 
+                rev.scheduledDate === today && !rev.isCompleted
+            );
+            
+            if (todayRevisions.length === 0) {
+                todayContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No revisions scheduled for today!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by subject and chapter name
+            todayRevisions.sort((a, b) => {
+                if (a.chapterSubject !== b.chapterSubject) {
+                    return a.chapterSubject.localeCompare(b.chapterSubject);
+                }
+                return a.chapterName.localeCompare(b.chapterName);
+            });
+            
+            // Generate HTML for each revision
+            let html = '';
+            todayRevisions.forEach(rev => {
+                html += `
+                    <div class="revision-item">
+                        <div class="revision-content">
+                            <div class="revision-chapter-name">${rev.chapterName}</div>
+                            <div class="revision-meta">
+                                <span><i class="fas fa-book"></i> ${getSubjectDisplayName(rev.chapterSubject)}</span>
+                                <span><i class="fas fa-redo"></i> Revision: R${rev.revisionNumber}/${currentRevisionPlan.length}</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn complete-revision-btn" onclick="markRevisionAsCompleted(${rev.id})">
+                                <i class="fas fa-check"></i> Done
+                            </button>
+                            <button class="action-btn missed-revision-btn" onclick="markRevisionAsMissed(${rev.id})">
+                                <i class="fas fa-times"></i> Miss
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            todayContainer.innerHTML = html;
+        }
+        
+        // Update backlog revisions display
+        function updateBacklogRevisions() {
+            const backlogContainer = document.getElementById('backlog-revisions');
+            
+            if (revisionData.missedRevisions.length === 0) {
+                backlogContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-check"></i>
+                        <p>No missed revisions! Great job!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by missed date (most recent first)
+            const sortedMissed = [...revisionData.missedRevisions].sort((a, b) => 
+                new Date(b.missedDate) - new Date(a.missedDate)
+            );
+            
+            // Generate HTML for each missed revision
+            let html = '';
+            sortedMissed.forEach(missed => {
+                html += `
+                    <div class="revision-item missed">
+                        <div class="revision-content">
+                            <div class="revision-chapter-name">${missed.chapterName}</div>
+                            <div class="revision-meta">
+                                <span><i class="fas fa-book"></i> ${getSubjectDisplayName(missed.chapterSubject)}</span>
+                                <span><i class="fas fa-exclamation-circle"></i> Missed: ${formatDateDisplay(missed.missedDate)}</span>
+                                <span><i class="fas fa-redo"></i> Revision: R${missed.revisionNumber} missed</span>
+                            </div>
+                        </div>
+                        <button class="action-btn complete-revision-btn" onclick="markRevisionAsCompleted(${missed.revisionId})">
+                            <i class="fas fa-check"></i> Mark Done
+                        </button>
+                    </div>
+                `;
+            });
+            
+            backlogContainer.innerHTML = html;
+        }
+        
+        // Update upcoming revisions display
+        function updateUpcomingRevisions() {
+            const upcomingContainer = document.getElementById('upcoming-revisions');
+            const today = getToday();
+            
+            // Get all future revisions (not completed, not missed, and after today)
+            const upcomingRevisions = revisionData.revisions.filter(rev => 
+                rev.scheduledDate > today && !rev.isCompleted && !rev.isMissed
+            );
+            
+            if (upcomingRevisions.length === 0) {
+                upcomingContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar"></i>
+                        <p>No upcoming revisions!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group revisions by date
+            const revisionsByDate = {};
+            upcomingRevisions.forEach(rev => {
+                if (!revisionsByDate[rev.scheduledDate]) {
+                    revisionsByDate[rev.scheduledDate] = [];
+                }
+                revisionsByDate[rev.scheduledDate].push(rev);
+            });
+            
+            // Get dates and sort them
+            const dates = Object.keys(revisionsByDate).sort();
+            
+            // Only show next 3 dates on mobile
+            const limit = window.innerWidth < 768 ? 3 : 5;
+            const nextDates = dates.slice(0, limit);
+            
+            if (nextDates.length === 0) {
+                upcomingContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar"></i>
+                        <p>No upcoming revisions!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            nextDates.forEach(date => {
+                const revisions = revisionsByDate[date];
+                const revisionCount = revisions.length;
+                
+                // Get subject breakdown
+                const subjects = {};
+                revisions.forEach(rev => {
+                    if (!subjects[rev.chapterSubject]) {
+                        subjects[rev.chapterSubject] = 0;
+                    }
+                    subjects[rev.chapterSubject]++;
+                });
+                
+                const subjectText = Object.keys(subjects).map(sub => {
+                    return `${subjects[sub]} ${getSubjectDisplayName(sub)}`;
+                }).join(', ');
+                
+                html += `
+                    <div class="revision-item" onclick="showDateRevisions('${date}')" style="cursor: pointer;">
+                        <div class="revision-content">
+                            <div class="revision-chapter-name">${formatDateDisplay(date)}</div>
+                            <div class="revision-meta">
+                                <span><i class="fas fa-redo"></i> ${revisionCount} revision${revisionCount > 1 ? 's' : ''}</span>
+                                <span><i class="fas fa-book"></i> ${subjectText}</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: #999; font-size: 1rem;"></i>
+                    </div>
+                `;
+            });
+            
+            upcomingContainer.innerHTML = html;
+        }
+        
+        // Update chapters list display
+        function updateChaptersList() {
+            // Filter chapters by active subject tab
+            const activeSubject = document.querySelector('.subject-tab.active') ? document.querySelector('.subject-tab.active').dataset.subject : 'all';
+            filterChaptersBySubject(activeSubject);
+        }
+        
+        // Filter chapters by subject
+        function filterChaptersBySubject(subject) {
+            const chaptersContainer = document.getElementById('chapters-container');
+            
+            let filteredChapters = revisionData.chapters;
+            
+            if (subject !== 'all') {
+                filteredChapters = revisionData.chapters.filter(ch => ch.subject === subject);
+            }
+            
+            // Sort chapters: custom chapters first, then by class and order
+            const sortedChapters = [...filteredChapters].sort((a, b) => {
+                // Custom chapters first
+                if (a.custom !== b.custom) {
+                    return a.custom ? -1 : 1;
+                }
+                // Then sort by class
+                if (a.class !== b.class) {
+                    if (a.class === 'Custom') return -1;
+                    if (b.class === 'Custom') return 1;
+                    return a.class.localeCompare(b.class);
+                }
+                // Then sort by order
+                return a.order - b.order;
+            });
+            
+            if (sortedChapters.length === 0) {
+                chaptersContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-book"></i>
+                        <p>No chapters found for this subject.</p>
+                        <p>Add chapters using the form above.</p>
+                    </div>
+                `;
+            } else {
+                let html = '';
+                sortedChapters.forEach(chapter => {
+                    // Count revisions for this chapter
+                    const chapterRevisions = revisionData.revisions.filter(rev => rev.chapterId === chapter.id);
+                    const completedRevisions = chapterRevisions.filter(rev => rev.isCompleted).length;
+                    const totalRevisions = chapterRevisions.length;
+                    
+                    // Find next revision date
+                    const nextRevision = chapterRevisions
+                        .filter(rev => !rev.isCompleted && !rev.isMissed)
+                        .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate))[0];
+                    
+                    const nextRevDate = nextRevision ? formatDateDisplay(nextRevision.scheduledDate) : 'None scheduled';
+                    
+                    const subjectColor = getSubjectColor(chapter.subject);
+                    
+                    html += `
+                        <div class="chapter-item ${chapter.isCompleted ? 'completed' : ''} ${chapter.custom ? 'user-added' : ''}">
+                            ${chapter.custom ? '<div class="user-added-badge">Custom</div>' : ''}
+                            <div class="chapter-info">
+                                <div class="chapter-name">${chapter.name}</div>
+                                <div class="chapter-meta">
+                                    <span class="chapter-subject" style="background: ${subjectColor}">${getSubjectDisplayName(chapter.subject)} - ${chapter.class}</span>
+                                    ${chapter.isCompleted && totalRevisions > 0 ? `<span><i class="fas fa-redo"></i> ${completedRevisions}/${totalRevisions} revisions done</span>` : ''}
+                                </div>
+                                ${chapter.isCompleted && nextRevision ? `<div class="revision-date" style="font-size: 0.75rem; margin-top: 5px;"><i class="far fa-calendar"></i> Next: ${nextRevDate}</div>` : ''}
+                            </div>
+                            <div class="chapter-actions">
+                                ${chapter.isCompleted ? 
+                                    `<button class="complete-btn"><i class="fas fa-check"></i> Finished</button>
+                                     <button class="undo-btn" onclick="undoChapterCompletion(${chapter.id})"><i class="fas fa-undo"></i> Undo</button>` :
+                                    `<button class="complete-btn" onclick="markChapterAsCompleted(${chapter.id})"><i class="fas fa-check"></i> Mark as Finished</button>`
+                                }
+                                ${chapter.custom ? `<button class="delete-btn" onclick="showDeleteWarning(${chapter.id})"><i class="fas fa-trash"></i> Delete</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                chaptersContainer.innerHTML = html;
+            }
+        }
+        
+        // Get color for subject
+        function getSubjectColor(subject) {
+            switch(subject) {
+                case 'biology': return '#2ecc71';
+                case 'chemistry': return '#e74c3c';
+                case 'physics': return '#3498db';
+                default: return '#6c757d';
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const today = getToday();
+            
+            // Today's revisions count
+            const todayRevisions = revisionData.revisions.filter(rev => 
+                rev.scheduledDate === today && !rev.isCompleted
+            ).length;
+            
+            // Backlog count
+            const backlogCount = revisionData.missedRevisions.length;
+            
+            // Total chapters count
+            const totalChapters = revisionData.chapters.length;
+            
+            // Completed chapters count
+            const completedChapters = revisionData.chapters.filter(ch => ch.isCompleted).length;
+            
+            // Update DOM
+            document.getElementById('today-count').textContent = todayRevisions;
+            document.getElementById('backlog-count').textContent = backlogCount;
+            document.getElementById('total-chapters').textContent = totalChapters;
+            document.getElementById('completed-chapters').textContent = completedChapters;
+        }
+        
+        // Check for revisions that were scheduled in the past but not completed
+        function checkForMissedRevisions() {
+            const today = getToday();
+            let missedFound = false;
+            
+            revisionData.revisions.forEach(rev => {
+                // If revision was scheduled before today and not completed/missed
+                if (rev.scheduledDate < today && !rev.isCompleted && !rev.isMissed) {
+                    rev.isMissed = true;
+                    missedFound = true;
+                    
+                    // Add to missed revisions if not already there
+                    const existingIndex = revisionData.missedRevisions.findIndex(mr => mr.revisionId === rev.id);
+                    if (existingIndex === -1) {
+                        const missedRevision = {
+                            revisionId: rev.id,
+                            chapterId: rev.chapterId,
+                            chapterName: rev.chapterName,
+                            chapterSubject: rev.chapterSubject,
+                            revisionNumber: rev.revisionNumber,
+                            missedDate: rev.scheduledDate,
+                            lastRevisionDate: rev.completedDate || "Never revised"
+                        };
+                        
+                        revisionData.missedRevisions.push(missedRevision);
+                    }
+                }
+            });
+            
+            if (missedFound) {
+                saveData();
+            }
+        }
+        
+        // Open settings modal
+        function openSettingsModal() {
+            // Update interval inputs to match current plan
+            initializeIntervalInputs();
+            
+            // Show modal
+            document.getElementById('settings-modal').classList.add('active');
+        }
+        
+        // Close settings modal
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('active');
+        }
+        
+        // Close revision plan modal
+        function closeRevisionPlanModal() {
+            document.getElementById('revision-plan-modal').classList.remove('active');
+        }
+        
+        // Close all modals
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            document.querySelectorAll('.warning-dialog.active').forEach(dialog => {
+                dialog.classList.remove('active');
+            });
+        }
+        
+        // Initialize interval inputs based on current plan
+        function initializeIntervalInputs() {
+            const intervalsList = document.getElementById('intervals-list');
+            intervalsList.innerHTML = '';
+            
+            // Set revision count dropdown
+            document.getElementById('revision-count').value = currentRevisionPlan.length;
+            
+            // Create inputs for each interval
+            currentRevisionPlan.forEach((interval, index) => {
+                addIntervalInputElement(interval, index);
+            });
+        }
+        
+        // Add interval input element
+        function addIntervalInputElement(value, index) {
+            const intervalsList = document.getElementById('intervals-list');
+            
+            const intervalItem = document.createElement('div');
+            intervalItem.className = 'interval-item';
+            intervalItem.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; padding: 12px; background: var(--input-bg); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-weight: 600; min-width: 40px;">R${index + 1}</div>
+                        <input type="number" min="1" max="365" value="${value}" placeholder="Days" class="form-input" style="width: 100px;">
+                        <div>day(s) after completion</div>
+                    </div>
+                    ${index > 0 ? `<button onclick="removeIntervalInput(this)" style="background: #e74c3c; color: white; border: none; padding: 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-top: 5px; font-size: 0.85rem;"><i class="fas fa-times"></i> Remove</button>` : ''}
+                </div>
+            `;
+            
+            intervalsList.appendChild(intervalItem);
+        }
+        
+        // Update interval inputs when revision count changes
+        function updateIntervalInputs() {
+            const count = parseInt(document.getElementById('revision-count').value);
+            const currentCount = document.querySelectorAll('#intervals-list .interval-item').length;
+            
+            if (count > currentCount) {
+                // Add more intervals
+                for (let i = currentCount; i < count; i++) {
+                    // Default to previous interval + 7 days, or 7 if first
+                    let defaultValue = 7;
+                    if (i > 0) {
+                        const lastInput = document.querySelectorAll('#intervals-list input')[i-1];
+                        if (lastInput) {
+                            defaultValue = parseInt(lastInput.value) + 7;
+                        }
+                    }
+                    addIntervalInputElement(defaultValue, i);
+                }
+            } else if (count < currentCount) {
+                // Remove intervals
+                const intervalsList = document.getElementById('intervals-list');
+                const items = document.querySelectorAll('#intervals-list .interval-item');
+                
+                for (let i = currentCount - 1; i >= count; i--) {
+                    intervalsList.removeChild(items[i]);
+                }
+            }
+        }
+        
+        // Add interval input
+        function addIntervalInput() {
+            const intervalsList = document.getElementById('intervals-list');
+            const currentCount = document.querySelectorAll('#intervals-list .interval-item').length;
+            
+            // Default to previous interval + 7 days, or 7 if first
+            let defaultValue = 7;
+            if (currentCount > 0) {
+                const lastInput = document.querySelectorAll('#intervals-list input')[currentCount-1];
+                if (lastInput) {
+                    defaultValue = parseInt(lastInput.value) + 7;
+                }
+            }
+            
+            addIntervalInputElement(defaultValue, currentCount);
+            
+            // Update revision count dropdown
+            document.getElementById('revision-count').value = currentCount + 1;
+        }
+        
+        // Remove interval input
+        function removeIntervalInput(button) {
+            const intervalItem = button.closest('.interval-item');
+            intervalItem.remove();
+            
+            // Update revision count dropdown
+            const currentCount = document.querySelectorAll('#intervals-list .interval-item').length;
+            document.getElementById('revision-count').value = currentCount;
+        }
+        
+        // Apply plan preset
+        function applyPlanPreset() {
+            const preset = document.getElementById('plan-preset').value;
+            
+            let intervals = [];
+            
+            switch(preset) {
+                case 'default':
+                    intervals = [1, 4, 7, 14, 28];
+                    break;
+                case 'intensive':
+                    intervals = [1, 3, 7, 15, 30, 60];
+                    break;
+                case 'spaced':
+                    intervals = [1, 7, 30, 90];
+                    break;
+                case 'custom':
+                    // Keep current intervals
+                    return;
+            }
+            
+            // Update the UI
+            document.getElementById('revision-count').value = intervals.length;
+            
+            // Clear and rebuild interval inputs
+            const intervalsList = document.getElementById('intervals-list');
+            intervalsList.innerHTML = '';
+            
+            intervals.forEach((interval, index) => {
+                addIntervalInputElement(interval, index);
+            });
+            
+            // Show notification
+            showNotification(`Applied ${preset} preset`, 'success');
+        }
+        
+        // Reset to default plan
+        function resetToDefaultPlan() {
+            currentRevisionPlan = [...DEFAULT_REVISION_PLAN];
+            localStorage.removeItem('revisionFlowPlan');
+            
+            // Update UI
+            document.getElementById('revision-count').value = DEFAULT_REVISION_PLAN.length;
+            document.getElementById('plan-preset').value = 'default';
+            
+            // Clear and rebuild interval inputs
+            const intervalsList = document.getElementById('intervals-list');
+            intervalsList.innerHTML = '';
+            
+            DEFAULT_REVISION_PLAN.forEach((interval, index) => {
+                addIntervalInputElement(interval, index);
+            });
+            
+            showNotification('Reset to default revision plan', 'success');
+        }
+        
+        // Save custom revision plan
+        function saveCustomPlan() {
+            // Get intervals from inputs
+            const intervalInputs = document.querySelectorAll('#intervals-list input');
+            const intervals = [];
+            
+            intervalInputs.forEach(input => {
+                const value = parseInt(input.value);
+                if (!isNaN(value) && value > 0) {
+                    intervals.push(value);
+                }
+            });
+            
+            // Sort intervals
+            intervals.sort((a, b) => a - b);
+            
+            // Validate intervals
+            if (intervals.length === 0) {
+                showNotification('Please add at least one revision interval', 'error');
+                return;
+            }
+            
+            if (intervals.some(interval => interval <= 0)) {
+                showNotification('All intervals must be positive numbers', 'error');
+                return;
+            }
+            
+            // Check for duplicates
+            const uniqueIntervals = [...new Set(intervals)];
+            if (uniqueIntervals.length !== intervals.length) {
+                showNotification('Intervals should be unique', 'error');
+                return;
+            }
+            
+            // Save the plan
+            currentRevisionPlan = intervals;
+            localStorage.setItem('revisionFlowPlan', JSON.stringify(currentRevisionPlan));
+            
+            // Show notification
+            showNotification(`Custom revision plan saved! (${intervals.length} revisions)`, 'success');
+            
+            // Close modal
+            closeSettingsModal();
+        }
+        
+        // Show date revisions in modal
+        function showDateRevisions(date) {
+            const modalContent = document.getElementById('modal-content');
+            const revisions = revisionData.revisions.filter(rev => 
+                rev.scheduledDate === date && !rev.isCompleted && !rev.isMissed
+            );
+            
+            if (revisions.length === 0) {
+                modalContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No revisions scheduled for ${formatDateDisplay(date)}</p>
+                    </div>
+                `;
+            } else {
+                // Sort by subject and chapter name
+                revisions.sort((a, b) => {
+                    if (a.chapterSubject !== b.chapterSubject) {
+                        return a.chapterSubject.localeCompare(b.chapterSubject);
+                    }
+                    return a.chapterName.localeCompare(b.chapterName);
+                });
+                
+                let html = `
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="font-weight: 700; color: var(--primary-color); font-size: 1.1rem;">${formatDateDisplay(date)}</div>
+                                <div style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">${revisions.length} revision${revisions.length > 1 ? 's' : ''}</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #666;">
+                                Scheduled revisions for this date
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                `;
+                
+                revisions.forEach(rev => {
+                    html += `
+                        <div style="display: flex; flex-direction: column; gap: 8px; padding: 15px; background: var(--input-bg); border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <strong style="font-size: 1rem;">${rev.chapterName}</strong>
+                                <span style="font-size: 0.85rem; background: #e9ecef; padding: 4px 10px; border-radius: 10px;">${getSubjectDisplayName(rev.chapterSubject)}</span>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #666;">
+                                <i class="fas fa-redo"></i> Revision R${rev.revisionNumber}/${currentRevisionPlan.length}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+                
+                modalContent.innerHTML = html;
+            }
+            
+            // Update modal title
+            document.querySelector('#revision-plan-modal .modal-header h3').innerHTML = 
+                `<i class="fas fa-calendar-week"></i> Revisions for ${formatDateDisplay(date)}`;
+            
+            // Show modal
+            document.getElementById('revision-plan-modal').classList.add('active');
+        }
+        
+        // Show all revision dates in modal
+        function showAllRevisionDates() {
+            const modalContent = document.getElementById('modal-content');
+            const today = getToday();
+            
+            // Get all future revisions (not completed, not missed, and after today)
+            const upcomingRevisions = revisionData.revisions.filter(rev => 
+                rev.scheduledDate >= today && !rev.isCompleted && !rev.isMissed
+            );
+            
+            if (upcomingRevisions.length === 0) {
+                modalContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No upcoming revisions scheduled!</p>
+                        <p>Complete some chapters to see the revision schedule.</p>
+                    </div>
+                `;
+            } else {
+                // Group revisions by date
+                const revisionsByDate = {};
+                upcomingRevisions.forEach(rev => {
+                    if (!revisionsByDate[rev.scheduledDate]) {
+                        revisionsByDate[rev.scheduledDate] = [];
+                    }
+                    revisionsByDate[rev.scheduledDate].push(rev);
+                });
+                
+                // Get dates and sort them
+                const dates = Object.keys(revisionsByDate).sort();
+                
+                let html = `<div style="display: flex; flex-direction: column; gap: 12px;">`;
+                
+                dates.forEach(date => {
+                    const revisions = revisionsByDate[date];
+                    
+                    html += `
+                        <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; cursor: pointer;" onclick="showDateRevisions('${date}')">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <div style="font-weight: 700; color: var(--primary-color); font-size: 1rem;">${formatDateDisplay(date)}</div>
+                                <div style="background: var(--primary-color); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">${revisions.length} revision${revisions.length > 1 ? 's' : ''}</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #666;">
+                                Click to view details
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                
+                modalContent.innerHTML = html;
+            }
+            
+            // Update modal title
+            document.querySelector('#revision-plan-modal .modal-header h3').innerHTML = 
+                `<i class="fas fa-calendar-week"></i> All Upcoming Revision Dates`;
+            
+            // Show modal
+            document.getElementById('revision-plan-modal').classList.add('active');
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutTop 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
